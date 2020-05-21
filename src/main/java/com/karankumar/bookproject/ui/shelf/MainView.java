@@ -45,10 +45,8 @@ public class MainView extends VerticalLayout {
 
     private Grid<Book> bookGrid = new Grid<>(Book.class);
     private final TextField filterByTitle;
-    //    private final ComboBox<String> whichShelf;
     private final ComboBox<Shelf.ShelfName> whichShelf;
     private final List<Shelf> shelves;
-    //    private String chosenShelf;
     private Shelf.ShelfName chosenShelf;
     private String bookTitle; // the book to filter by (if specified)
 
@@ -89,8 +87,6 @@ public class MainView extends VerticalLayout {
 
     private void configureChosenShelf(List<Shelf> shelves) {
         whichShelf.setPlaceholder("Select shelf");
-//        whichShelf.setItems((shelves.stream().map(Shelf::getName)).toString());
-//        whichShelf.setItems(shelves.stream().map(Shelf::getName));
         whichShelf.setItems(Shelf.ShelfName.values());
         whichShelf.setRequired(true);
         whichShelf.addValueChangeListener(event -> {
@@ -110,7 +106,6 @@ public class MainView extends VerticalLayout {
     }
 
     private void updateList() {
-//        if (chosenShelf == null || chosenShelf.isEmpty()) {
         if (chosenShelf == null) {
             return;
         }

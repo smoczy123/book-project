@@ -49,6 +49,9 @@ public class Book extends BaseEntity {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Shelf> shelves;
 
+    @ManyToOne
+    private Shelf shelf;
+
     public Book() {
     }
 
@@ -81,12 +84,22 @@ public class Book extends BaseEntity {
         this.rating = rating;
     }
 
+    /*
     public Set<Shelf> getShelves() {
         return shelves;
     }
 
     public void setShelves(Set<Shelf> shelves) {
         this.shelves = shelves;
+    }
+    */
+
+    public Shelf getShelf() {
+        return shelf;
+    }
+
+    public void setShelf(Shelf shelf) {
+        this.shelf = shelf;
     }
 
     public Genre getGenre() {

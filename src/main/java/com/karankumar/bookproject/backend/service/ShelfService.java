@@ -147,9 +147,6 @@ public class ShelfService extends BaseService<Shelf, Long> {
             shelfRepository.saveAll(
                     Stream.of("To read", "Reading", "Read")
                         .map(name -> {
-//                            Shelf shelf = new Shelf(name);
-//                            Shelf shelf = new Shelf(ShelfName.values());
-
                             Shelf.ShelfName[] allShelves = Shelf.ShelfName.values();
 
                             Shelf.ShelfName shelfName = allShelves[random.nextInt(allShelves.length)];

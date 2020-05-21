@@ -32,10 +32,6 @@ import java.util.List;
 
 @Entity
 public class Shelf extends BaseEntity {
-//    @NotNull
-//    @NotEmpty
-//    private String name;
-
     @NotNull
     @Enumerated(EnumType.STRING)
     private ShelfName name;
@@ -60,27 +56,12 @@ public class Shelf extends BaseEntity {
         }
     }
 
-
     public Shelf() {
     }
-
-//    public Shelf(String name) {
-//        this.name = name;
-//    }
 
     public Shelf(ShelfName name) {
         this.name = name;
     }
-
-    /*
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-    */
 
     public ShelfName getName()  {
         return name;

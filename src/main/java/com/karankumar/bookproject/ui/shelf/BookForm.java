@@ -45,7 +45,6 @@ public class BookForm extends FormLayout {
     private TextField bookTitle = new TextField();
     private TextField authorFirstName = new TextField();
     private TextField authorLastName = new TextField();
-//    private ComboBox<String> shelf = new ComboBox<>();
     private ComboBox<Shelf.ShelfName> shelf = new ComboBox<>();
     private ComboBox<Genre> bookGenre = new ComboBox<>();
     private IntegerField pageCount = new IntegerField();
@@ -111,10 +110,10 @@ public class BookForm extends FormLayout {
                 .forField(authorLastName)
                 .withConverter(new StringToAuthorLastNameConverter())
                 .bind(Book::getAuthor, Book::setAuthor);
-
-//        binder.forField(shelf)
-//                .withConverter(new StringToShelfConverter())
-//                .bind(Book::getShelves, Book::setShelves);
+        binder
+                .forField(shelf)
+                .withConverter(new ShelfToShelfNameConverter())
+                .bind(Book::getShelf, Book::setShelf);
         binder.forField(dateStartedReading)
                 .bind(Book::getDateStartedReading, Book::setDateStartedReading);
         binder.forField(dateFinishedReading)
@@ -191,8 +190,6 @@ public class BookForm extends FormLayout {
         shelf.setPlaceholder("Choose a shelf");
         shelf.setClearButtonVisible(true);
 
-//        List<Shelf> shelves = shelfService.findAll();
-//        shelf.setItems(shelves.stream().map(Shelf::getName).toString());
         shelf.setItems(Shelf.ShelfName.values());
     }
 

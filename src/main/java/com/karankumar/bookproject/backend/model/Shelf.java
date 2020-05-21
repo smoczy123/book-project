@@ -19,9 +19,10 @@
 package com.karankumar.bookproject.backend.model;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -31,25 +32,61 @@ import java.util.List;
 
 @Entity
 public class Shelf extends BaseEntity {
+//    @NotNull
+//    @NotEmpty
+//    private String name;
+
     @NotNull
-    @NotEmpty
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private ShelfName name;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Book> books;
 
+    public enum ShelfName {
+        TO_READ("To read"),
+        READING("Reading"),
+        READ("Read");
+
+        private String shelfName;
+
+        ShelfName (String shelfName) {
+            this.shelfName = shelfName;
+        }
+
+        @Override
+        public String toString() {
+            return shelfName;
+        }
+    }
+
+
     public Shelf() {
     }
 
-    public Shelf(String name) {
+//    public Shelf(String name) {
+//        this.name = name;
+//    }
+
+    public Shelf(ShelfName name) {
         this.name = name;
     }
 
+    /*
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
+        this.name = name;
+    }
+    */
+
+    public ShelfName getName()  {
+        return name;
+    }
+
+    public void setName(ShelfName name) {
         this.name = name;
     }
 

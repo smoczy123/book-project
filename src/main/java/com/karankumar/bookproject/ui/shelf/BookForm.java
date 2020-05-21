@@ -38,8 +38,6 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
 
-import java.util.List;
-
 /**
  * A Vaadin form for adding a new {@code Book}
  */
@@ -47,8 +45,8 @@ public class BookForm extends FormLayout {
     private TextField bookTitle = new TextField();
     private TextField authorFirstName = new TextField();
     private TextField authorLastName = new TextField();
-//    private MultiselectComboBox<String> shelf = new MultiselectComboBox<>();
-    private ComboBox<String> shelf = new ComboBox<>();
+//    private ComboBox<String> shelf = new ComboBox<>();
+    private ComboBox<Shelf.ShelfName> shelf = new ComboBox<>();
     private ComboBox<Genre> bookGenre = new ComboBox<>();
     private IntegerField pageCount = new IntegerField();
     private DatePicker dateStartedReading = new DatePicker();
@@ -193,8 +191,9 @@ public class BookForm extends FormLayout {
         shelf.setPlaceholder("Choose a shelf");
         shelf.setClearButtonVisible(true);
 
-        List<Shelf> shelves = shelfService.findAll();
-        shelf.setItems(shelves.stream().map(Shelf::getName));
+//        List<Shelf> shelves = shelfService.findAll();
+//        shelf.setItems(shelves.stream().map(Shelf::getName).toString());
+        shelf.setItems(Shelf.ShelfName.values());
     }
 
     private void configureRating() {

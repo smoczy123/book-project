@@ -45,9 +45,11 @@ public class MainView extends VerticalLayout {
 
     private Grid<Book> bookGrid = new Grid<>(Book.class);
     private final TextField filterByTitle;
-    private final ComboBox<String> whichShelf;
+    //    private final ComboBox<String> whichShelf;
+    private final ComboBox<Shelf.ShelfName> whichShelf;
     private final List<Shelf> shelves;
-    private String chosenShelf;
+    //    private String chosenShelf;
+    private Shelf.ShelfName chosenShelf;
     private String bookTitle; // the book to filter by (if specified)
 
     public MainView(BookService bookService, ShelfService shelfService) {
@@ -71,23 +73,25 @@ public class MainView extends VerticalLayout {
         bookForm.addListener(BookForm.SaveEvent.class, this::saveBook);
         bookForm.addListener(BookForm.DeleteEvent.class, this::deleteBook);
 
-    bookGrid
-        .asSingleSelect()
-        .addValueChangeListener(
-            event -> {
-              if (event == null) {
-                  System.out.println("event is null");
-              } else if (event.getValue() == null) {
-                  System.out.println("event value is null");
-              } else {
-                  editBook(event.getValue());
-              }
-            });
+        bookGrid
+                .asSingleSelect()
+                .addValueChangeListener(
+                        event -> {
+                            if (event == null) {
+                                System.out.println("event is null");
+                            } else if (event.getValue() == null) {
+                                System.out.println("event value is null");
+                            } else {
+                                editBook(event.getValue());
+                            }
+                        });
     }
 
     private void configureChosenShelf(List<Shelf> shelves) {
         whichShelf.setPlaceholder("Select shelf");
-        whichShelf.setItems(shelves.stream().map(Shelf::getName));
+//        whichShelf.setItems((shelves.stream().map(Shelf::getName)).toString());
+//        whichShelf.setItems(shelves.stream().map(Shelf::getName));
+        whichShelf.setItems(Shelf.ShelfName.values());
         whichShelf.setRequired(true);
         whichShelf.addValueChangeListener(event -> {
             if (event.getValue() == null) {
@@ -106,7 +110,8 @@ public class MainView extends VerticalLayout {
     }
 
     private void updateList() {
-        if (chosenShelf == null || chosenShelf.isEmpty()) {
+//        if (chosenShelf == null || chosenShelf.isEmpty()) {
+        if (chosenShelf == null) {
             return;
         }
 

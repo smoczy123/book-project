@@ -17,7 +17,11 @@
 */
 package com.karankumar.bookproject.backend.service;
 
-import com.karankumar.bookproject.backend.model.*;
+import com.karankumar.bookproject.backend.model.Author;
+import com.karankumar.bookproject.backend.model.Book;
+import com.karankumar.bookproject.backend.model.Genre;
+import com.karankumar.bookproject.backend.model.RatingScale;
+import com.karankumar.bookproject.backend.model.Shelf;
 import com.karankumar.bookproject.backend.repository.AuthorRepository;
 import com.karankumar.bookproject.backend.repository.BookRepository;
 import com.karankumar.bookproject.backend.repository.ShelfRepository;
@@ -138,11 +142,18 @@ public class ShelfService extends BaseService<Shelf, Long> {
         }
 
         if (shelfRepository.count() == 0) {
+            Random random = new Random(0);
             List<Book> books = bookRepository.findAll();
             shelfRepository.saveAll(
                     Stream.of("To read", "Reading", "Read")
                         .map(name -> {
-                            Shelf shelf = new Shelf(name);
+//                            Shelf shelf = new Shelf(name);
+//                            Shelf shelf = new Shelf(ShelfName.values());
+
+                            Shelf.ShelfName[] allShelves = Shelf.ShelfName.values();
+
+                            Shelf.ShelfName shelfName = allShelves[random.nextInt(allShelves.length)];
+                            Shelf shelf = new Shelf(shelfName);
                             shelf.setBooks(books);
                             return shelf;
                     }).collect(Collectors.toList()));

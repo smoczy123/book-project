@@ -69,11 +69,11 @@ public enum Genre {
     private String genre;
 
     Genre(String genre) {
-	this.genre = genre;
+    	this.genre = genre;
     }
 
     @Override
     public String toString() {
-	return genre;
+    	return genre;
     }
 }

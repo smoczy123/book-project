@@ -129,6 +129,21 @@ public class BooksInShelfView extends VerticalLayout {
                             }
                         });
 
+        bookGrid.getCrudFormFactory().setVisibleProperties("title", "shelf", "dateStartedReading",
+                "dateFinishedReading", "genre", "numberOfPages", "rating");
+
+        bookGrid.getCrudFormFactory().setFieldProvider("shelf", () -> {
+            ComboBox<PredefinedShelf.ShelfName> shelf = new ComboBox<>();
+            shelf.setItems(PredefinedShelf.ShelfName.values());
+            shelf.setRequired(true);
+            return shelf;
+        });
+
+
+        bookGrid.getCrudFormFactory().setConverter("rating", new DoubleToRatingScaleConverter());
+//        crudFormFactory.setFieldType("rating", NumberField.class);
+
+//        crudFormFactory.setFieldType("numberOfPages", IntegerField.class);
     }
 
     private Set<Book> updateList() {

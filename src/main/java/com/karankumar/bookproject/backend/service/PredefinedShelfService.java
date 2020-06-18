@@ -59,24 +59,14 @@ public class PredefinedShelfService extends BaseService<PredefinedShelf, Long> {
     }
 
     @Override
-    public void save(PredefinedShelf shelf) {
+    public PredefinedShelf save(PredefinedShelf shelf) {
         if (shelf != null) {
-
-//            List<PredefinedShelf> allShelves = findAll();
-//            for (PredefinedShelf s : allShelves) {
-//                if (s.getShelfName().equals(shelf.getShelfName())) {
-//                    // update
-//                   delete(s);
-//                   save(shelf);
-//                   LOGGER.log(Level.INFO, "Updating...");
-//                   return;
-//                }
-//            }
-
             LOGGER.log(Level.INFO, "Saving shelf: " + shelf);
             shelfRepository.save(shelf);
+            return shelf;
         } else {
             LOGGER.log(Level.SEVERE, "Null Shelf");
+            return null;
         }
     }
 

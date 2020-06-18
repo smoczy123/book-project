@@ -49,7 +49,10 @@ public class Book extends BaseEntity {
     @JoinColumn(name = "shelf_id")
     private PredefinedShelf shelf;
 
-    protected Book() {
+//    protected Book() {
+//    }
+
+    public Book() {
     }
 
     public Book(String title, Author author) {

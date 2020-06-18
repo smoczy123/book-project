@@ -47,9 +47,12 @@ public class AuthorService extends BaseService<Author, Long> {
     }
 
     @Override
-    public void save(Author author) {
+    public Author save(Author author) {
         if (author != null) {
             authorRepository.save(author);
+            return author;
+        } else {
+            return null;
         }
     }
 

@@ -22,7 +22,6 @@ import com.karankumar.bookproject.backend.model.PredefinedShelf;
 import com.karankumar.bookproject.backend.service.BookService;
 import com.karankumar.bookproject.backend.service.PredefinedShelfService;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -31,7 +30,9 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.vaadin.crudui.crud.impl.GridCrud;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,7 +49,7 @@ public class BooksInShelfView extends VerticalLayout {
     private final BookService bookService;
     private final PredefinedShelfService shelfService;
 
-//    private final Grid<Book> bookGrid = new Grid<>(Book.class);
+    //    private final Grid<Book> bookGrid = new Grid<>(Book.class);
     private final GridCrud<Book> bookGrid = new GridCrud<>(Book.class);
     private final TextField filterByTitle;
     private final ComboBox<PredefinedShelf.ShelfName> whichShelf;
@@ -91,7 +92,19 @@ public class BooksInShelfView extends VerticalLayout {
                             }
                         });
 
+        bookGrid.setAddOperation(bookService::save);
         bookGrid.setDeleteOperation(bookService::delete);
+    }
+
+    private List<Book> test() {
+        List<PredefinedShelf> matchingShelves = shelfService.findAll(chosenShelf);
+        if (matchingShelves.size() == 1) {
+            Set<Book> books = matchingShelves.get(0).getBooks();
+            List<Book> list = new ArrayList<>();
+            list.addAll(books);
+            return list;
+        }
+        return null;
     }
 
     private void configureChosenShelf() {
@@ -104,15 +117,23 @@ public class BooksInShelfView extends VerticalLayout {
             } else {
                 chosenShelf = event.getValue();
                 updateList();
+
+                bookGrid.setFindAllOperation(() -> {
+                    List<PredefinedShelf> matchingShelves = shelfService.findAll(chosenShelf);
+                    if (matchingShelves.size() == 1) {
+                        return matchingShelves.get(0).getBooks();
+                    } else {
+                        return null;
+                    }
+                });
+
             }
         });
     }
 
     private void configureBookGrid() {
         addClassName("book-grid");
-//        bookGrid.setColumns("title", "author", "genre", "dateStartedReading", "dateFinishedReading", "rating",
-//                "numberOfPages");
-
+        bookGrid.getCrudFormFactory().setUseBeanValidation(true);
         bookGrid.getGrid().setColumns("title", "author", "genre", "dateStartedReading", "dateFinishedReading", "rating",
                 "numberOfPages");
     }
@@ -129,7 +150,6 @@ public class BooksInShelfView extends VerticalLayout {
         if (!matchingShelves.isEmpty()) {
             if (bookTitle != null && !bookTitle.isEmpty()) {
                 LOGGER.log(Level.INFO, "Searching for the filter " + bookTitle);
-//                bookGrid.setItems(bookService.findAll(bookTitle));
                 bookGrid.getGrid().setItems(bookService.findAll(bookTitle));
             } else if (matchingShelves.size() == 1) {
                 LOGGER.log(Level.INFO, "Found 1 shelf: " + matchingShelves.get(0));

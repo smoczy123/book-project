@@ -50,7 +50,7 @@ public class BookService extends BaseService<Book, Long> {
     }
 
     @Override
-    public void save(Book book) {
+    public Book save(Book book) {
         if (book != null) {
             if (book.getAuthor() != null) {
                 authorRepository.save(book.getAuthor());
@@ -77,8 +77,10 @@ public class BookService extends BaseService<Book, Long> {
             LOGGER.log(Level.INFO, "Book repository count after: " + bookRepository.count());
 
             LOGGER.log(Level.INFO, book.getTitle() + " saved");
+            return book;
         } else {
             LOGGER.log(Level.SEVERE, "Null book");
+            return null;
         }
     }
 

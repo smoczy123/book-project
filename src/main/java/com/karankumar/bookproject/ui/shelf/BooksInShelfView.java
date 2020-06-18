@@ -24,6 +24,7 @@ import com.karankumar.bookproject.backend.service.PredefinedShelfService;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
@@ -134,14 +135,31 @@ public class BooksInShelfView extends VerticalLayout {
 
         bookGrid.getCrudFormFactory().setFieldProvider("shelf", () -> {
             ComboBox<PredefinedShelf.ShelfName> shelf = new ComboBox<>();
+            shelf.setPlaceholder("Choose a shelf");
             shelf.setItems(PredefinedShelf.ShelfName.values());
             shelf.setRequired(true);
             return shelf;
         });
 
-
+        bookGrid.getCrudFormFactory().setFieldProvider("rating", () -> {
+            NumberField rating = new NumberField();
+            rating.setHasControls(true);
+            rating.setMin(0);
+            rating.setMax(10);
+            rating.setStep(0.5f);
+            rating.setClearButtonVisible(true);
+            return rating;
+        });
         bookGrid.getCrudFormFactory().setConverter("rating", new DoubleToRatingScaleConverter());
-//        crudFormFactory.setFieldType("rating", NumberField.class);
+
+
+//        bookGrid.getCrudFormFactory().setFieldProvider("numberOfPages", () -> {
+//            IntegerField pageCount = new IntegerField();
+//            pageCount.setMin(1);
+//            pageCount.setHasControls(true);
+//            pageCount.setClearButtonVisible(true);
+//            return pageCount;
+//        });
 
 //        crudFormFactory.setFieldType("numberOfPages", IntegerField.class);
     }

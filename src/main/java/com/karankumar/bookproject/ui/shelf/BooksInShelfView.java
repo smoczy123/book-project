@@ -79,24 +79,11 @@ public class BooksInShelfView extends VerticalLayout {
         bookForm.addListener(BookForm.SaveEvent.class, this::saveBook);
         bookForm.addListener(BookForm.DeleteEvent.class, this::deleteBook);
 
-        bookGrid.getGrid()
-                .asSingleSelect()
-                .addValueChangeListener(
-                        event -> {
-                            if (event == null) {
-                                LOGGER.log(Level.FINE, "Event is null");
-                            } else if (event.getValue() == null) {
-                                LOGGER.log(Level.FINE, "Event value is null");
-                            } else {
-                                editBook(event.getValue());
-                            }
-                        });
-
         bookGrid.setAddOperation(bookService::save);
         bookGrid.setDeleteOperation(bookService::delete);
     }
 
-    private List<Book> test() {
+    private List<Book> update() {
         List<PredefinedShelf> matchingShelves = shelfService.findAll(chosenShelf);
         if (matchingShelves.size() == 1) {
             Set<Book> books = matchingShelves.get(0).getBooks();
@@ -113,20 +100,12 @@ public class BooksInShelfView extends VerticalLayout {
         whichShelf.setRequired(true);
         whichShelf.addValueChangeListener(event -> {
             if (event.getValue() == null) {
-                LOGGER.log(Level.FINE, "No choice selected");
+                LOGGER.log(Level.SEVERE, "No choice selected");
             } else {
                 chosenShelf = event.getValue();
-                updateList();
+                updateList(); // this call is needed so that the grid is pre-populated
 
-                bookGrid.setFindAllOperation(() -> {
-                    List<PredefinedShelf> matchingShelves = shelfService.findAll(chosenShelf);
-                    if (matchingShelves.size() == 1) {
-                        return matchingShelves.get(0).getBooks();
-                    } else {
-                        return null;
-                    }
-                });
-
+                bookGrid.setFindAllOperation(() -> new ArrayList<>(updateList()));
             }
         });
     }
@@ -136,12 +115,26 @@ public class BooksInShelfView extends VerticalLayout {
         bookGrid.getCrudFormFactory().setUseBeanValidation(true);
         bookGrid.getGrid().setColumns("title", "author", "genre", "dateStartedReading", "dateFinishedReading", "rating",
                 "numberOfPages");
+
+        bookGrid.getGrid()
+                .asSingleSelect()
+                .addValueChangeListener(
+                        event -> {
+                            if (event == null) {
+                                LOGGER.log(Level.FINE, "Event is null");
+                            } else if (event.getValue() == null) {
+                                LOGGER.log(Level.FINE, "Event value is null");
+                            } else {
+                                editBook(event.getValue());
+                            }
+                        });
+
     }
 
-    private void updateList() {
+    private Set<Book> updateList() {
         if (chosenShelf == null) {
             LOGGER.log(Level.FINEST, "Chosen shelf is null");
-            return;
+            return null;
         }
 
         // Find the shelf that matches the chosen shelf's name
@@ -154,14 +147,18 @@ public class BooksInShelfView extends VerticalLayout {
             } else if (matchingShelves.size() == 1) {
                 LOGGER.log(Level.INFO, "Found 1 shelf: " + matchingShelves.get(0));
                 PredefinedShelf selectedShelf = matchingShelves.get(0);
-//                bookGrid.setItems(selectedShelf.getBooks());
-                bookGrid.getGrid().setItems(bookService.findAll(bookTitle));
+
+                // set the items as well as returning it so that the user does not need to press the refresh button
+                bookGrid.getGrid().setItems(selectedShelf.getBooks());
+
+                return selectedShelf.getBooks();
             } else {
                 LOGGER.log(Level.SEVERE, matchingShelves.size() + " matching shelves found for " + chosenShelf);
             }
         } else {
             LOGGER.log(Level.SEVERE, "No matching shelves found for " + chosenShelf);
         }
+        return null;
     }
 
     private void configureFilter() {

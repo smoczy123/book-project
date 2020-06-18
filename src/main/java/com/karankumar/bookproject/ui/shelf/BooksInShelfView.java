@@ -29,6 +29,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.vaadin.crudui.crud.impl.GridCrud;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -47,7 +48,8 @@ public class BooksInShelfView extends VerticalLayout {
     private final BookService bookService;
     private final PredefinedShelfService shelfService;
 
-    private final Grid<Book> bookGrid = new Grid<>(Book.class);
+//    private final Grid<Book> bookGrid = new Grid<>(Book.class);
+    private final GridCrud<Book> bookGrid = new GridCrud<>(Book.class);
     private final TextField filterByTitle;
     private final ComboBox<PredefinedShelf.ShelfName> whichShelf;
     private PredefinedShelf.ShelfName chosenShelf;
@@ -76,7 +78,7 @@ public class BooksInShelfView extends VerticalLayout {
         bookForm.addListener(BookForm.SaveEvent.class, this::saveBook);
         bookForm.addListener(BookForm.DeleteEvent.class, this::deleteBook);
 
-        bookGrid
+        bookGrid.getGrid()
                 .asSingleSelect()
                 .addValueChangeListener(
                         event -> {
@@ -88,6 +90,8 @@ public class BooksInShelfView extends VerticalLayout {
                                 editBook(event.getValue());
                             }
                         });
+
+        bookGrid.setDeleteOperation(bookService::delete);
     }
 
     private void configureChosenShelf() {
@@ -106,7 +110,10 @@ public class BooksInShelfView extends VerticalLayout {
 
     private void configureBookGrid() {
         addClassName("book-grid");
-        bookGrid.setColumns("title", "author", "genre", "dateStartedReading", "dateFinishedReading", "rating",
+//        bookGrid.setColumns("title", "author", "genre", "dateStartedReading", "dateFinishedReading", "rating",
+//                "numberOfPages");
+
+        bookGrid.getGrid().setColumns("title", "author", "genre", "dateStartedReading", "dateFinishedReading", "rating",
                 "numberOfPages");
     }
 
@@ -122,11 +129,13 @@ public class BooksInShelfView extends VerticalLayout {
         if (!matchingShelves.isEmpty()) {
             if (bookTitle != null && !bookTitle.isEmpty()) {
                 LOGGER.log(Level.INFO, "Searching for the filter " + bookTitle);
-                bookGrid.setItems(bookService.findAll(bookTitle));
+//                bookGrid.setItems(bookService.findAll(bookTitle));
+                bookGrid.getGrid().setItems(bookService.findAll(bookTitle));
             } else if (matchingShelves.size() == 1) {
                 LOGGER.log(Level.INFO, "Found 1 shelf: " + matchingShelves.get(0));
                 PredefinedShelf selectedShelf = matchingShelves.get(0);
-                bookGrid.setItems(selectedShelf.getBooks());
+//                bookGrid.setItems(selectedShelf.getBooks());
+                bookGrid.getGrid().setItems(bookService.findAll(bookTitle));
             } else {
                 LOGGER.log(Level.SEVERE, matchingShelves.size() + " matching shelves found for " + chosenShelf);
             }
